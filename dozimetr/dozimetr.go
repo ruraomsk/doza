@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	"runtime"
+	"time"
 
 	"github.com/mikepb/go-serial"
 )
@@ -130,28 +131,29 @@ func crcCalc(buf []byte) bool {
 }
 
 //RoutDozimetr read and conver data from dozimetr
-func RoutDozimetr(c chan *Dozimetr) {
+func RoutDozimetr(c chan *Dozimetr, namePort string) {
 	defer exit(c)
 	list, err := serial.ListPorts()
 	if err != nil {
 		fmt.Println("Serial error ", err.Error())
 		return
 	}
-	namePort := ""
-	if runtime.GOOS == "linux" {
-		for _, p := range list {
-			if p.USBProduct() == "USB-Serial Controller" {
-				namePort = p.Name()
-				break
-			}
-		}
-	} else {
-		namePort = "COM3"
-	}
 	if namePort == "" {
-		fmt.Println("Dozimetr error not found USB-Serial Controller")
-		return
+		if runtime.GOOS == "linux" {
+			for _, p := range list {
+				if p.USBProduct() == "USB-Serial Controller" {
+					namePort = p.Name()
+					break
+				}
+			}
+		} else {
+			namePort = "COM3"
+		}
+		if namePort == "" {
+			fmt.Println("Dozimetr error not found USB-Serial Controller")
+			return
 
+		}
 	}
 	port, err := openPort(namePort)
 	if err != nil {
@@ -162,10 +164,20 @@ func RoutDozimetr(c chan *Dozimetr) {
 	buffer := make([]byte, 24)
 	port.ResetInput()
 	for true {
+		t := time.Now()
+		t = t.Add(time.Duration(10 * time.Second))
+		port.SetReadDeadline(t)
 		b, err := oneByte(port)
 		if err != nil {
 			fmt.Println(err)
-			return
+			port.Close()
+			port, err = openPort(namePort)
+			if err != nil {
+				fmt.Println("Serial error ", err.Error())
+				return
+			}
+			port.ResetInput()
+			continue
 		}
 		if b != 1 {
 			continue
@@ -174,7 +186,14 @@ func RoutDozimetr(c chan *Dozimetr) {
 		b, err = oneByte(port)
 		if err != nil {
 			fmt.Println(err)
-			return
+			port.Close()
+			port, err = openPort(namePort)
+			if err != nil {
+				fmt.Println("Serial error ", err.Error())
+				return
+			}
+			port.ResetInput()
+			continue
 		}
 		if b != 12 {
 			continue
@@ -183,7 +202,14 @@ func RoutDozimetr(c chan *Dozimetr) {
 		b, err = oneByte(port)
 		if err != nil {
 			fmt.Println(err)
-			return
+			port.Close()
+			port, err = openPort(namePort)
+			if err != nil {
+				fmt.Println("Serial error ", err.Error())
+				return
+			}
+			port.ResetInput()
+			continue
 		}
 		if b != 19 {
 			continue
@@ -196,7 +222,14 @@ func RoutDozimetr(c chan *Dozimetr) {
 				continue
 			}
 			fmt.Println(err.Error())
-			break
+			port.Close()
+			port, err = openPort(namePort)
+			if err != nil {
+				fmt.Println("Serial error ", err.Error())
+				return
+			}
+			port.ResetInput()
+			continue
 		}
 		if nBytes < 1 {
 			continue
@@ -205,7 +238,7 @@ func RoutDozimetr(c chan *Dozimetr) {
 			buffer[3+i] = buf[i]
 		}
 		// if !crcCalc(buffer) {
-		// 	fmt.Printf("port.Read: %v %s\n", buffer, "bad crc")
+		// fmt.Printf("port.Read: %v \n", buffer)
 		// }
 
 		// 6 байт это вроде P

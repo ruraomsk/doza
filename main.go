@@ -6,15 +6,100 @@ import (
 )
 
 func main() {
-	cDoza := make(chan *dozimetr.Dozimetr)
-	go dozimetr.RoutDozimetr(cDoza)
+	names := [7]string{"COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7"}
+	Doza1 := make(chan *dozimetr.Dozimetr)
+	Doza2 := make(chan *dozimetr.Dozimetr)
+	Doza3 := make(chan *dozimetr.Dozimetr)
+	Doza4 := make(chan *dozimetr.Dozimetr)
+	Doza5 := make(chan *dozimetr.Dozimetr)
+	Doza6 := make(chan *dozimetr.Dozimetr)
+	Doza7 := make(chan *dozimetr.Dozimetr)
+	go dozimetr.RoutDozimetr(Doza1, names[0])
+	go dozimetr.RoutDozimetr(Doza2, names[1])
+	go dozimetr.RoutDozimetr(Doza3, names[2])
+	go dozimetr.RoutDozimetr(Doza4, names[3])
+	go dozimetr.RoutDozimetr(Doza5, names[4])
+	go dozimetr.RoutDozimetr(Doza6, names[5])
+	go dozimetr.RoutDozimetr(Doza7, names[6])
+	worked := 7
 	for true {
-		d := <-cDoza
-		if d == nil {
-			fmt.Println("End work Dozimetr")
+		if worked == 0 {
 			return
 		}
-		h, m, s := d.GetTime()
-		fmt.Println(h, m, s, d.Value, d.Pogr, d.SumDoza)
+		select {
+		case d := <-Doza1:
+			{
+				if d == nil {
+					fmt.Println("End work " + names[0])
+					worked--
+					continue
+				}
+				h, m, s := d.GetTime()
+				fmt.Println(h, m, s, d.Value, d.Pogr, d.SumDoza)
+
+			}
+		case d := <-Doza2:
+			{
+				if d == nil {
+					fmt.Println("End work " + names[1])
+					worked--
+					continue
+				}
+				h, m, s := d.GetTime()
+				fmt.Println(h, m, s, d.Value, d.Pogr, d.SumDoza)
+
+			}
+		case d := <-Doza3:
+			{
+				if d == nil {
+					fmt.Println("End work " + names[2])
+					worked--
+					continue
+				}
+				h, m, s := d.GetTime()
+				fmt.Println(h, m, s, d.Value, d.Pogr, d.SumDoza)
+			}
+		case d := <-Doza4:
+			{
+				if d == nil {
+					fmt.Println("End work " + names[3])
+					worked--
+					continue
+				}
+				h, m, s := d.GetTime()
+				fmt.Println(h, m, s, d.Value, d.Pogr, d.SumDoza)
+			}
+		case d := <-Doza5:
+			{
+				if d == nil {
+					fmt.Println("End work " + names[4])
+					worked--
+					continue
+				}
+				h, m, s := d.GetTime()
+				fmt.Println(h, m, s, d.Value, d.Pogr, d.SumDoza)
+			}
+		case d := <-Doza6:
+			{
+				if d == nil {
+					fmt.Println("End work " + names[5])
+					worked--
+					continue
+				}
+				h, m, s := d.GetTime()
+				fmt.Println(h, m, s, d.Value, d.Pogr, d.SumDoza)
+			}
+		case d := <-Doza7:
+			{
+				if d == nil {
+					fmt.Println("End work " + names[6])
+					worked--
+					continue
+				}
+				h, m, s := d.GetTime()
+				fmt.Println(h, m, s, d.Value, d.Pogr, d.SumDoza)
+			}
+
+		}
 	}
 }
