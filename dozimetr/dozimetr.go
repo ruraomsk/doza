@@ -157,7 +157,7 @@ func RoutDozimetr(c chan *Dozimetr, namePort string) {
 	}
 	port, err := openPort(namePort)
 	if err != nil {
-		fmt.Println("Serial error ", err.Error())
+		fmt.Println("Serial error ", err.Error(), namePort)
 		return
 	}
 	defer port.Close()
@@ -173,7 +173,7 @@ func RoutDozimetr(c chan *Dozimetr, namePort string) {
 			port.Close()
 			port, err = openPort(namePort)
 			if err != nil {
-				fmt.Println("Serial error ", err.Error())
+				fmt.Println("Serial error ", err.Error(), namePort)
 				return
 			}
 			port.ResetInput()
@@ -189,7 +189,7 @@ func RoutDozimetr(c chan *Dozimetr, namePort string) {
 			port.Close()
 			port, err = openPort(namePort)
 			if err != nil {
-				fmt.Println("Serial error ", err.Error())
+				fmt.Println("Serial error ", err.Error(), namePort)
 				return
 			}
 			port.ResetInput()
@@ -205,7 +205,7 @@ func RoutDozimetr(c chan *Dozimetr, namePort string) {
 			port.Close()
 			port, err = openPort(namePort)
 			if err != nil {
-				fmt.Println("Serial error ", err.Error())
+				fmt.Println("Serial error ", err.Error(), namePort)
 				return
 			}
 			port.ResetInput()
@@ -221,11 +221,11 @@ func RoutDozimetr(c chan *Dozimetr, namePort string) {
 			if err.Error() == "EOF" {
 				continue
 			}
-			fmt.Println(err.Error())
+			fmt.Println(err.Error(), namePort)
 			port.Close()
 			port, err = openPort(namePort)
 			if err != nil {
-				fmt.Println("Serial error ", err.Error())
+				fmt.Println("Serial error ", err.Error(), namePort)
 				return
 			}
 			port.ResetInput()

@@ -35,7 +35,7 @@ func main() {
 					continue
 				}
 				h, m, s := d.GetTime()
-				fmt.Println(h, m, s, d.Value, d.Pogr, d.SumDoza)
+				fmt.Println(names[0], h, m, s, d.Value, d.Pogr, d.SumDoza)
 
 			}
 		case d := <-Doza2:
@@ -46,7 +46,7 @@ func main() {
 					continue
 				}
 				h, m, s := d.GetTime()
-				fmt.Println(h, m, s, d.Value, d.Pogr, d.SumDoza)
+				fmt.Println(names[1], h, m, s, d.Value, d.Pogr, d.SumDoza)
 
 			}
 		case d := <-Doza3:
@@ -57,7 +57,7 @@ func main() {
 					continue
 				}
 				h, m, s := d.GetTime()
-				fmt.Println(h, m, s, d.Value, d.Pogr, d.SumDoza)
+				fmt.Println(names[2], h, m, s, d.Value, d.Pogr, d.SumDoza)
 			}
 		case d := <-Doza4:
 			{
@@ -67,7 +67,7 @@ func main() {
 					continue
 				}
 				h, m, s := d.GetTime()
-				fmt.Println(h, m, s, d.Value, d.Pogr, d.SumDoza)
+				fmt.Println(names[3], h, m, s, d.Value, d.Pogr, d.SumDoza)
 			}
 		case d := <-Doza5:
 			{
@@ -77,7 +77,7 @@ func main() {
 					continue
 				}
 				h, m, s := d.GetTime()
-				fmt.Println(h, m, s, d.Value, d.Pogr, d.SumDoza)
+				fmt.Println(names[4], h, m, s, d.Value, d.Pogr, d.SumDoza)
 			}
 		case d := <-Doza6:
 			{
@@ -87,7 +87,7 @@ func main() {
 					continue
 				}
 				h, m, s := d.GetTime()
-				fmt.Println(h, m, s, d.Value, d.Pogr, d.SumDoza)
+				fmt.Println(names[5], h, m, s, d.Value, d.Pogr, d.SumDoza)
 			}
 		case d := <-Doza7:
 			{
@@ -97,7 +97,7 @@ func main() {
 					continue
 				}
 				h, m, s := d.GetTime()
-				fmt.Println(h, m, s, d.Value, d.Pogr, d.SumDoza)
+				fmt.Println(names[6], h, m, s, d.Value, d.Pogr, d.SumDoza)
 			}
 
 		}
