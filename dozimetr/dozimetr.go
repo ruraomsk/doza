@@ -169,7 +169,7 @@ func RoutDozimetr(c chan *Dozimetr, namePort string) {
 		port.SetReadDeadline(t)
 		b, err := oneByte(port)
 		if err != nil {
-			fmt.Println(err)
+			fmt.Println(err.Error(), namePort)
 			port.Close()
 			port, err = openPort(namePort)
 			if err != nil {
