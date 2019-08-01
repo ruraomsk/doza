@@ -97,7 +97,7 @@ func oneByte(port *serial.Port) (byte, error) {
 			if err.Error() == "EOF" {
 				continue
 			}
-			fmt.Println(err.Error(), port.Info)
+			fmt.Println(err.Error(), port.Info.Name())
 			return 0, err
 		}
 		if nBytes < 1 {
