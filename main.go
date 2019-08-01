@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	names := [7]string{"COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7"}
+	names := [7]string{"/dev/ttyS0", "/dev/ttyS1", "/dev/ttyS2", "/dev/ttyS3", "/dev/ttyS4", "/dev/ttyS5", "/dev/ttyS6"}
 	Doza1 := make(chan *dozimetr.Dozimetr)
 	Doza2 := make(chan *dozimetr.Dozimetr)
 	Doza3 := make(chan *dozimetr.Dozimetr)
