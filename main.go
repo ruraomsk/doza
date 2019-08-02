@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 	"rura/doza/dozimetr"
+	"rura/teprol/logger"
 	"sync"
 	"time"
 )
@@ -27,11 +28,11 @@ func connectToCombo() net.Conn {
 	for true {
 		conn, err := net.Dial("tcp", "192.168.10.30:5507")
 		if err != nil {
-			fmt.Println("Error tcp ", err.Error())
+			logger.Error.Println("Error tcp ", err.Error())
 			time.Sleep(10 * time.Second)
 			continue
 		}
-		fmt.Println("Connect to Combo")
+		logger.Info.Println("Connect to Combo")
 		return conn
 	}
 	return nil
@@ -44,6 +45,11 @@ func main() {
 	timer = make(chan string)
 	var conn net.Conn
 	var err error
+	err = logger.Init("/home/rura/log/doza")
+	if err != nil {
+		fmt.Println("Error init loggin subsystem ", err.Error())
+		return
+	}
 	conn = connectToCombo()
 
 	go sleeping()
@@ -54,7 +60,7 @@ func main() {
 		case d := <-Doza1:
 			{
 				if d == nil {
-					fmt.Println("End work " + names[0])
+					logger.Error.Println("End work " + names[0])
 					mutex.Lock()
 					values[0] = dozaValue{"0.0", "false"}
 					mutex.Unlock()
@@ -69,13 +75,13 @@ func main() {
 					values[0] = dozaValue{st, "true"}
 				}
 				mutex.Unlock()
-				fmt.Println(names[0], d.Value, d.Pogr, d.SumDoza)
+				logger.Info.Println(names[0], d.Value, d.Pogr, d.SumDoza)
 				// isdata <- "data"
 			}
 		case d := <-Doza2:
 			{
 				if d == nil {
-					fmt.Println("End work " + names[1])
+					logger.Error.Println("End work " + names[1])
 					mutex.Lock()
 					values[1] = dozaValue{"0.0", "false"}
 					mutex.Unlock()
@@ -90,7 +96,7 @@ func main() {
 					values[1] = dozaValue{st, "true"}
 				}
 				mutex.Unlock()
-				fmt.Println(names[1], d.Value, d.Pogr, d.SumDoza)
+				logger.Info.Println(names[1], d.Value, d.Pogr, d.SumDoza)
 				// isdata <- "data"
 
 			}
@@ -103,11 +109,11 @@ func main() {
 					values[1] = dozaValue{"0.0", "false"}
 				}
 				mutex.Unlock()
-				fmt.Println(d, st)
+				logger.Info.Println(d, st)
 				for true {
 					_, err = conn.Write([]byte(st))
 					if err != nil {
-						fmt.Println(err.Error())
+						logger.Error.Println(err.Error())
 						conn.Close()
 						conn = connectToCombo()
 					} else {
