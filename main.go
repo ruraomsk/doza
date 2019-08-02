@@ -38,7 +38,7 @@ func connectToCombo() net.Conn {
 }
 func main() {
 	values := [2]dozaValue{{"0.0", "false"}, {"0.0", "false"}}
-	names := [2]string{"/dev/ttyUSB2", "/dev/ttyUSB1"}
+	names := [2]string{"/dev/ttyS1", "/dev/ttyS2"}
 	Doza1 := make(chan *dozimetr.Dozimetr)
 	Doza2 := make(chan *dozimetr.Dozimetr)
 	timer = make(chan string)
