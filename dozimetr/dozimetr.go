@@ -95,6 +95,7 @@ func oneByte(port *serial.Port) (byte, error) {
 		nBytes, err := port.Read(b)
 		if err != nil {
 			if err.Error() == "EOF" {
+				// fmt.Print("eof")
 				continue
 			}
 			fmt.Println(err.Error(), port.Info.Name())
@@ -103,6 +104,7 @@ func oneByte(port *serial.Port) (byte, error) {
 		if nBytes < 1 {
 			continue
 		}
+		// fmt.Print(b[0], " ")
 		return b[0], nil
 	}
 	return 0, nil
@@ -161,12 +163,12 @@ func RoutDozimetr(c chan *Dozimetr, namePort string) {
 		return
 	}
 	defer port.Close()
+	t := time.Now()
+	t = t.Add(time.Duration(10 * time.Second))
+	port.SetReadDeadline(t)
 	buffer := make([]byte, 24)
 	port.ResetInput()
 	for true {
-		t := time.Now()
-		t = t.Add(time.Duration(10 * time.Second))
-		port.SetReadDeadline(t)
 		b, err := oneByte(port)
 		if err != nil {
 			fmt.Println(err.Error(), namePort)
@@ -180,6 +182,7 @@ func RoutDozimetr(c chan *Dozimetr, namePort string) {
 			continue
 		}
 		if b != 1 {
+			// port.ResetInput()
 			continue
 		}
 		buffer[0] = 1
@@ -196,12 +199,13 @@ func RoutDozimetr(c chan *Dozimetr, namePort string) {
 			continue
 		}
 		if b != 12 {
+			port.ResetInput()
 			continue
 		}
 		buffer[1] = 12
 		b, err = oneByte(port)
 		if err != nil {
-			fmt.Println(err)
+			// fmt.Println(err)
 			port.Close()
 			port, err = openPort(namePort)
 			if err != nil {
@@ -212,6 +216,7 @@ func RoutDozimetr(c chan *Dozimetr, namePort string) {
 			continue
 		}
 		if b != 19 {
+			port.ResetInput()
 			continue
 		}
 		buffer[2] = 19
@@ -219,6 +224,7 @@ func RoutDozimetr(c chan *Dozimetr, namePort string) {
 		nBytes, err := port.Read(buf)
 		if err != nil {
 			if err.Error() == "EOF" {
+				// fmt.Println("eof")
 				continue
 			}
 			fmt.Println(err.Error(), namePort)
@@ -231,9 +237,16 @@ func RoutDozimetr(c chan *Dozimetr, namePort string) {
 			port.ResetInput()
 			continue
 		}
+		// port.ResetInput()
 		if nBytes < 1 {
+			// fmt.Println("<0!")
 			continue
 		}
+		// if nBytes != 21 {
+		// 	port.ResetInput()
+		// 	fmt.Println("not 21 length")
+		// }
+		// fmt.Println(buf)
 		for i := 0; i < len(buf); i++ {
 			buffer[3+i] = buf[i]
 		}
@@ -252,6 +265,12 @@ func RoutDozimetr(c chan *Dozimetr, namePort string) {
 		d.SumDoza = getFloat(buffer, 14) * nC
 		d.Pogr = getFloat(buffer, 7)
 		c <- d
+		// fmt.Println("send to chan")
+		t := time.Now()
+		t = t.Add(time.Duration(10 * time.Second))
+		// port.Close()
+		// port, err = openPort(namePort)
+		port.SetReadDeadline(t)
 	}
 	c <- nil
 }
