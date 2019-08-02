@@ -29,7 +29,7 @@ func connectToCombo() net.Conn {
 		conn, err := net.Dial("tcp", "192.168.10.30:5507")
 		if err != nil {
 			logger.Error.Println("Error tcp ", err.Error())
-			time.Sleep(10 * time.Second)
+			time.Sleep(3 * time.Second)
 			continue
 		}
 		logger.Info.Println("Connect to Combo")
