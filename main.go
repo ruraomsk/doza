@@ -103,7 +103,7 @@ func main() {
 		case d := <-timer:
 			{
 				mutex.Lock()
-				st := fmt.Sprint("[ ", values[0].value, " ", values[0].flag, " ", values[1].value, " ", values[1].flag, " ]")
+				st := fmt.Sprint("[ ", values[0].value, " ", values[0].flag, " ", values[1].value, " ", values[1].flag, " ]\x00")
 				if d == "work" {
 					values[0] = dozaValue{"0.0", "false"}
 					values[1] = dozaValue{"0.0", "false"}
