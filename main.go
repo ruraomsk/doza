@@ -119,10 +119,8 @@ func main() {
 					} else {
 						break
 					}
-
 				}
 			}
-
 		}
 	}
 }
